@@ -30,14 +30,17 @@
   <h2>Kelola <span>Aplikasi</span></h2>
   <form class="panel" id="af">
     <div class="r2"><div><label>Nama</label><input id="n" required></div><div><label>Kategori</label><input id="c" placeholder="Desain, Developer…"></div></div>
-    <div class="r2"><div><label>URL aplikasi</label><input id="u" type="url" placeholder="https://" required></div><div style="flex:0 1 90px"><label>Ikon</label><input id="i" maxlength="4" placeholder="🧰"></div></div>
+    <div class="r2"><div><label>Link download APK</label><input id="u" type="url" placeholder="https://" required></div><div style="flex:0 1 90px"><label>Ikon</label><input id="i" maxlength="4" placeholder="🧰"></div></div>
+    <div class="msg" style="margin:6px 0 0">Unggah file APK ke Google Drive, Mediafire, atau GitHub Releases, lalu tempel link-nya di atas. Datanya tersimpan di server dan tampil untuk semua user.</div>
     <label>URL gambar (opsional, menggantikan ikon)</label><input id="im" type="url">
-    <label>Deskripsi</label><textarea id="d" rows="2"></textarea>
+    <div class="r2"><div><label>Key (opsional)</label><input id="k"></div><div><label>Kompatibilitas (opsional)</label><input id="cm" placeholder="NONROOT / ROOT / Semua"></div></div>
+    <label>Deskripsi</label><textarea id="d" rows="4"></textarea>
     <label class="ck"><input type="checkbox" id="h">Beri label HOT</label>
     <div class="r2" style="margin-top:14px"><button class="btn">Simpan</button><button type="button" class="btn alt" id="rs">Batal</button><button type="button" class="btn alt" id="sd">Isi data contoh</button></div>
     <div class="msg" id="am"></div>
   </form>
   <div id="list"></div>
+  <h2>Laporan <span>Link Mati</span></h2><div id="rep"></div>
  </div>
 </div>
 
@@ -52,7 +55,7 @@ onAuthStateChanged(auth,async u=>{
  if(!u){$("#login").classList.remove("hide");$("#app").classList.add("hide");return}
  let ok=false;try{ok=(await getDoc(doc(db,"admins",u.uid))).exists()}catch(e){}
  if(!ok){await signOut(auth);$("#m").className="msg err";$("#m").textContent="Akun ini bukan admin.";return}
- $("#login").classList.add("hide");$("#app").classList.remove("hide");loadS();load()});
+ $("#login").classList.add("hide");$("#app").classList.remove("hide");loadS();load();loadR()});
 async function loadS(){const s=(await getDoc(doc(db,"settings","main"))).data()||{};
  $("#on").checked=!!s.annOn;$("#at").value=s.annTitle||"";$("#ai").value=s.annImage||"";$("#ax").value=s.annText||"";$("#ab").value=s.annBtn||"";$("#al").value=s.annLink||"";$("#mq").value=s.marquee||"";$("#wa").value=s.wa||""}
 $("#sf").onsubmit=async ev=>{ev.preventDefault();const m=$("#sm");
@@ -60,12 +63,15 @@ $("#sf").onsubmit=async ev=>{ev.preventDefault();const m=$("#sm");
   m.className="msg";m.textContent="Tersimpan. Popup akan muncul lagi untuk semua user."}catch(e){m.className="msg err";m.textContent="Gagal: "+(e.code||"cek aturan")}};
 async function load(){const s=await getDocs(query(collection(db,"apps"),orderBy("name")));
  $("#list").replaceChildren(...s.docs.map(d=>{const a=d.data(),r=mk("div","item"),e=mk("button","btn alt sm","Edit"),x=mk("button","btn alt sm","Hapus");
-  e.onclick=()=>{editId=d.id;$("#n").value=a.name;$("#c").value=a.category||"";$("#u").value=a.url;$("#i").value=a.icon||"";$("#im").value=a.image||"";$("#d").value=a.desc||"";$("#h").checked=!!a.hot;$("#af").scrollIntoView({behavior:"smooth"})};
+  e.onclick=()=>{editId=d.id;$("#n").value=a.name;$("#c").value=a.category||"";$("#u").value=a.url;$("#i").value=a.icon||"";$("#im").value=a.image||"";$("#k").value=a.key||"";$("#cm").value=a.compat||"";$("#d").value=a.desc||"";$("#h").checked=!!a.hot;$("#af").scrollIntoView({behavior:"smooth"})};
   x.onclick=async()=>{if(confirm("Hapus "+a.name+"?")){await deleteDoc(doc(db,"apps",d.id));load()}};
   r.append(mk("span","",a.icon||"🧰"),mk("span","n",a.name),mk("small","",(a.clicks||0)+" klik"),e,x);return r}))}
+async function loadR(){try{const s=await getDocs(query(collection(db,"reports"),orderBy("at","desc")));
+ $("#rep").replaceChildren(...(s.empty?[mk("p","msg","Belum ada laporan.")]:s.docs.map(d=>{const a=d.data(),r=mk("div","item"),x=mk("button","btn alt sm","Selesai");
+  x.onclick=async()=>{await deleteDoc(doc(db,"reports",d.id));loadR()};r.append(mk("span","","⚠️"),mk("span","n",a.name+" — link mati"),x);return r})))}catch(e){}}
 const reset=()=>{editId=null;$("#af").reset()};$("#rs").onclick=reset;
 $("#af").onsubmit=async ev=>{ev.preventDefault();const m=$("#am");
- const data={name:$("#n").value.trim(),category:$("#c").value.trim(),url:$("#u").value.trim(),icon:$("#i").value.trim(),image:$("#im").value.trim(),desc:$("#d").value.trim(),hot:$("#h").checked};
+ const data={name:$("#n").value.trim(),category:$("#c").value.trim(),url:$("#u").value.trim(),icon:$("#i").value.trim(),image:$("#im").value.trim(),key:$("#k").value.trim(),compat:$("#cm").value.trim(),desc:$("#d").value.trim(),hot:$("#h").checked};
  try{editId?await setDoc(doc(db,"apps",editId),data,{merge:true}):await addDoc(collection(db,"apps"),{...data,clicks:0,at:serverTimestamp()});
   m.className="msg";m.textContent="Tersimpan.";reset();load()}catch(e){m.className="msg err";m.textContent="Gagal: "+(e.code||"cek aturan Firestore")}};
 $("#sd").onclick=async()=>{const S=[["Excalidraw","Desain","https://excalidraw.com","✏️","Papan gambar gaya sketsa tangan."],["Photopea","Desain","https://www.photopea.com","🖼️","Editor gambar mirip Photoshop."],["Squoosh","Developer","https://squoosh.app","🗜️","Kompres dan ubah format gambar."],["diagrams.net","Produktivitas","https://app.diagrams.net","🧩","Buat diagram alur dan UML."],["Regex101","Developer","https://regex101.com","🔎","Uji regular expression."],["Carbon","Developer","https://carbon.now.sh","💎","Ubah kode jadi gambar rapi."]];

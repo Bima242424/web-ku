@@ -26,3 +26,10 @@ Stack 100% gratis: HTML statis (Vercel Hobby) + Firebase Auth & Firestore (paket
 - Pengumuman popup (admin atur judul, gambar, teks, tombol). User bisa centang "Sembunyikan 5 jam"; tombol lonceng membuka ulang.
 - Favorit tersimpan per akun, produk terlaris otomatis dari jumlah klik, mode gelap, tombol pasang (PWA), tombol WhatsApp bantuan.
 - Setelah deploy, publish ulang `firestore.rules` karena ada koleksi `settings` dan `users`.
+
+## Update: detail aplikasi, notifikasi, rating, laporan
+- Klik aplikasi membuka halaman detail (download, deskripsi, kompatibilitas, key, rating, lapor link mati).
+- Lonceng menampilkan daftar aplikasi baru beserta waktunya.
+- Semua data (aplikasi, rating, laporan) disimpan di Firestore, bukan di perangkat, jadi sama untuk semua user.
+- File APK: unggah ke Google Drive / Mediafire / GitHub Releases, lalu tempel linknya di admin.
+- Publish ulang `firestore.rules` (ada aturan baru untuk rating dan laporan).
