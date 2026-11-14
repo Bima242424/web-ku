@@ -97,3 +97,27 @@ h2{font-size:26px;font-weight:800;margin:28px 0 12px}h2::after{content:"";displa
 .app .gr{grid-column:2;grid-row:4;align-self:center;padding-right:4px}
 .app .btn{grid-column:1/-1;grid-row:5;align-self:auto;margin-top:6px}
 .hrt{top:14px;right:14px}
+
+/* ===== ikon SVG (menggantikan emoji) ===== */
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+.ib{display:grid;place-items:center;padding:0;color:var(--ink)}.ib .ic{width:20px;height:20px}
+:root:not([data-theme=dark]) .ic.sun,[data-theme=dark] .ic.moon{display:none}
+.sr span .ic{width:20px;height:20px}
+.q i .ic{width:19px;height:19px;color:var(--pri)}
+.fl .ic{width:24px;height:24px}
+.hrt{display:grid;place-items:center}.hrt .ic{width:16px;height:16px}.hrt.on .ic{fill:currentColor}
+.nt i .ic{width:24px;height:24px;color:var(--pri)}
+.dh i .ic{width:28px;height:28px;color:var(--pri)}
+
+/* ===== gaya ikon v2 (mengikuti referensi) ===== */
+#bell,#th{border:0;background:none;width:44px;height:44px;color:var(--ink)}
+#bell .ic,#th .ic{width:27px;height:27px}
+#bell i{top:3px;right:3px}
+#mn{border-radius:16px;width:50px;height:50px;background:var(--soft);border:2px solid var(--line)}
+#mn .ic{width:24px;height:24px}
+.chip .ci{display:grid;place-items:center}.chip .ic{width:21px;height:21px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.35)}.pill .ic{width:16px;height:16px}
+.inst .x{display:grid;place-items:center;padding:0}.inst .x .ic{width:22px;height:22px}
+.btn .ic{display:inline-block;vertical-align:-.17em;width:1.1em;height:1.1em}
+.stars button{display:grid;place-items:center}.stars button .ic{width:36px;height:36px}.stars button.on .ic{fill:currentColor}
+.q i{border-radius:14px}
