@@ -19,12 +19,12 @@
   <div class="menu hide" id="menu"><a href="admin">Admin</a><button id="out">Keluar</button></div></header>
  <nav class="tabs" id="tabs"></nav>
  <div class="wrap" id="home">
-  <section class="hero"><span class="pill">● SELALU ONLINE</span><h1>Web Kebutuhan Game Gratis</h1><p>CHEAT PILIHAN GRATIS</p><div class="mq"><span id="mqt"></span></div></section>
+  <div class="mq"><span id="mqt"></span></div>
+  <section class="hero"><div class="ht"><span class="pill" id="hi">● SELALU ONLINE</span><h1>Web Kebutuhan Game Gratis</h1><p>CHEAT PILIHAN GRATIS</p></div>
+   <div class="stats"><div><span class="num" id="s1">0</span>Aplikasi</div><div><span class="num" id="s2">0</span>Kategori</div><div><span class="num">Rp0</span>Biaya</div></div></section>
   <div class="sr"><input id="q" placeholder="Cari aplikasi atau kategori…"><span>🔍</span></div>
-  <div class="stats"><div><span class="num" id="s1">0</span>Aplikasi</div><div><span class="num" id="s2">0</span>Kategori</div><div><span class="num">Rp0</span>Biaya</div></div>
-  <div class="inst hide" id="inst"><div class="mk">b</div><div><b>Simpan ke layar utama</b>Akses lebih cepat tanpa buka browser.</div><button class="btn sm" id="ins">Simpan</button><button class="x" id="ix">×</button></div>
-  <h2>Pintasan</h2>
   <div class="qs"><button class="q" id="qa"><i>▦</i><b>Lihat semua</b><small>Buka seluruh katalog</small></button><a class="q" id="qr" target="_blank" rel="noopener"><i>✉</i><b>Minta aplikasi</b><small>Kirim lewat WhatsApp</small></a></div>
+  <div class="inst hide" id="inst"><div class="mk">b</div><div><b>Simpan ke layar utama</b>Akses lebih cepat tanpa buka browser.</div><button class="btn sm" id="ins">Simpan</button><button class="x" id="ix">×</button></div>
   <div id="top"><h2>Paling <span>Sering Dibuka</span></h2><div class="row" id="toprow"></div></div>
   <h2 id="ph">Katalog <span>Lengkap</span></h2><div class="grid" id="grid"></div>
  </div>
@@ -48,7 +48,7 @@ $("#g").onclick=async()=>{const p=new GoogleAuthProvider(),m=$("#m");m.className
  try{await signInWithPopup(auth,p)}catch(e){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code))await signInWithRedirect(auth,p);else{m.className="msg err";m.textContent="Gagal masuk: "+(e.code||"coba lagi")}}};
 $("#out").onclick=()=>signOut(auth);
 onAuthStateChanged(auth,async u=>{
- $("#login").classList.toggle("hide",!!u);$("#app").classList.toggle("hide",!u);if(!u)return;uid=u.uid;
+ $("#login").classList.toggle("hide",!!u);$("#app").classList.toggle("hide",!u);if(!u)return;uid=u.uid;$("#hi").textContent="● Halo, "+((u.displayName||"").split(" ")[0]||"teman");
  try{S=(await getDoc(doc(db,"settings","main"))).data()||{}}catch(e){}
  try{favs=new Set(((await getDoc(doc(db,"users",uid))).data()||{}).favs||[])}catch(e){}
  try{apps=(await getDocs(query(collection(db,"apps"),orderBy("name")))).docs.map(d=>({id:d.id,...d.data()}))}
