@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin — b-tools</title><meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<main id="login" class="center"><form class="plate" id="f">
+  <div class="mk">b</div><div class="logo">Admin</div>
+  <label>Email</label><input id="e" type="email" autocomplete="username" required>
+  <label>Kata sandi</label><input id="p" type="password" autocomplete="current-password" required>
+  <button class="btn" style="width:100%;margin-top:18px">Masuk</button><div class="msg" id="m"></div>
+</form></main>
+
+<div id="app" class="hide">
+ <header class="hd"><div class="lg"><div class="mk">b</div><b>Admin</b></div><div class="ac"><a class="btn alt sm" href="/" style="display:grid;place-items:center">Situs</a><button class="btn alt sm" id="out">Keluar</button></div></header>
+ <div class="wrap">
+  <h2>Pengumuman <span>&amp; Situs</span></h2>
+  <form class="panel" id="sf">
+    <label class="ck"><input type="checkbox" id="on">Tampilkan pengumuman (popup, bisa disembunyikan user 5 jam)</label>
+    <label>Judul popup</label><input id="at" placeholder="RILIS BARU!!!">
+    <label>URL gambar (opsional)</label><input id="ai" type="url" placeholder="https://…/banner.png">
+    <label>Teks pengumuman</label><textarea id="ax" rows="3"></textarea>
+    <div class="r2"><div><label>Teks tombol</label><input id="ab" placeholder="Join sekarang"></div><div><label>Link tombol</label><input id="al" type="url" placeholder="https://chat.whatsapp.com/…"></div></div>
+    <label>Teks berjalan di banner</label><input id="mq" placeholder="Aplikasi gratis pilihan • Update setiap hari">
+    <label>Link WhatsApp bantuan &amp; request</label><input id="wa" type="url" placeholder="https://wa.me/62…">
+    <button class="btn" style="margin-top:16px">Simpan pengumuman</button><div class="msg" id="sm"></div>
+  </form>
+
+  <h2>Kelola <span>Aplikasi</span></h2>
+  <form class="panel" id="af">
+    <div class="r2"><div><label>Nama</label><input id="n" required></div><div><label>Kategori</label><input id="c" placeholder="Desain, Developer…"></div></div>
+    <div class="r2"><div><label>URL aplikasi</label><input id="u" type="url" placeholder="https://" required></div><div style="flex:0 1 90px"><label>Ikon</label><input id="i" maxlength="4" placeholder="🧰"></div></div>
+    <label>URL gambar (opsional, menggantikan ikon)</label><input id="im" type="url">
+    <label>Deskripsi</label><textarea id="d" rows="2"></textarea>
+    <label class="ck"><input type="checkbox" id="h">Beri label HOT</label>
+    <div class="r2" style="margin-top:14px"><button class="btn">Simpan</button><button type="button" class="btn alt" id="rs">Batal</button><button type="button" class="btn alt" id="sd">Isi data contoh</button></div>
+    <div class="msg" id="am"></div>
+  </form>
+  <div id="list"></div>
+ </div>
+</div>
+
+<script type="module">
+import {auth,db,signInWithEmailAndPassword,onAuthStateChanged,signOut,collection,doc,getDoc,getDocs,addDoc,setDoc,deleteDoc,query,orderBy,serverTimestamp} from "./firebase.js";
+const $=s=>document.querySelector(s),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+let editId=null;
+$("#f").onsubmit=async ev=>{ev.preventDefault();const m=$("#m");m.className="msg";m.textContent="Memeriksa…";
+ try{await signInWithEmailAndPassword(auth,$("#e").value,$("#p").value)}catch(e){m.className="msg err";m.textContent="Email atau kata sandi salah."}};
+$("#out").onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async u=>{
+ if(!u){$("#login").classList.remove("hide");$("#app").classList.add("hide");return}
+ let ok=false;try{ok=(await getDoc(doc(db,"admins",u.uid))).exists()}catch(e){}
+ if(!ok){await signOut(auth);$("#m").className="msg err";$("#m").textContent="Akun ini bukan admin.";return}
+ $("#login").classList.add("hide");$("#app").classList.remove("hide");loadS();load()});
+async function loadS(){const s=(await getDoc(doc(db,"settings","main"))).data()||{};
+ $("#on").checked=!!s.annOn;$("#at").value=s.annTitle||"";$("#ai").value=s.annImage||"";$("#ax").value=s.annText||"";$("#ab").value=s.annBtn||"";$("#al").value=s.annLink||"";$("#mq").value=s.marquee||"";$("#wa").value=s.wa||""}
+$("#sf").onsubmit=async ev=>{ev.preventDefault();const m=$("#sm");
+ try{await setDoc(doc(db,"settings","main"),{annOn:$("#on").checked,annTitle:$("#at").value.trim(),annImage:$("#ai").value.trim(),annText:$("#ax").value.trim(),annBtn:$("#ab").value.trim(),annLink:$("#al").value.trim(),marquee:$("#mq").value.trim(),wa:$("#wa").value.trim(),annVer:Date.now()},{merge:true});
+  m.className="msg";m.textContent="Tersimpan. Popup akan muncul lagi untuk semua user."}catch(e){m.className="msg err";m.textContent="Gagal: "+(e.code||"cek aturan")}};
+async function load(){const s=await getDocs(query(collection(db,"apps"),orderBy("name")));
+ $("#list").replaceChildren(...s.docs.map(d=>{const a=d.data(),r=mk("div","item"),e=mk("button","btn alt sm","Edit"),x=mk("button","btn alt sm","Hapus");
+  e.onclick=()=>{editId=d.id;$("#n").value=a.name;$("#c").value=a.category||"";$("#u").value=a.url;$("#i").value=a.icon||"";$("#im").value=a.image||"";$("#d").value=a.desc||"";$("#h").checked=!!a.hot;$("#af").scrollIntoView({behavior:"smooth"})};
+  x.onclick=async()=>{if(confirm("Hapus "+a.name+"?")){await deleteDoc(doc(db,"apps",d.id));load()}};
+  r.append(mk("span","",a.icon||"🧰"),mk("span","n",a.name),mk("small","",(a.clicks||0)+" klik"),e,x);return r}))}
+const reset=()=>{editId=null;$("#af").reset()};$("#rs").onclick=reset;
+$("#af").onsubmit=async ev=>{ev.preventDefault();const m=$("#am");
+ const data={name:$("#n").value.trim(),category:$("#c").value.trim(),url:$("#u").value.trim(),icon:$("#i").value.trim(),image:$("#im").value.trim(),desc:$("#d").value.trim(),hot:$("#h").checked};
+ try{editId?await setDoc(doc(db,"apps",editId),data,{merge:true}):await addDoc(collection(db,"apps"),{...data,clicks:0,at:serverTimestamp()});
+  m.className="msg";m.textContent="Tersimpan.";reset();load()}catch(e){m.className="msg err";m.textContent="Gagal: "+(e.code||"cek aturan Firestore")}};
+$("#sd").onclick=async()=>{const S=[["Excalidraw","Desain","https://excalidraw.com","✏️","Papan gambar gaya sketsa tangan."],["Photopea","Desain","https://www.photopea.com","🖼️","Editor gambar mirip Photoshop."],["Squoosh","Developer","https://squoosh.app","🗜️","Kompres dan ubah format gambar."],["diagrams.net","Produktivitas","https://app.diagrams.net","🧩","Buat diagram alur dan UML."],["Regex101","Developer","https://regex101.com","🔎","Uji regular expression."],["Carbon","Developer","https://carbon.now.sh","💎","Ubah kode jadi gambar rapi."]];
+ for(const s of S)await addDoc(collection(db,"apps"),{name:s[0],category:s[1],url:s[2],icon:s[3],desc:s[4],hot:false,clicks:0,at:serverTimestamp()});load()};
+</script></body></html>

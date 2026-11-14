@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>b-tools — Katalog Aplikasi Gratis</title><meta name="theme-color" content="#0b63e5">
+<link rel="manifest" href="manifest.webmanifest">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<main id="login" class="center"><div class="plate">
+  <div class="mk">b</div><div class="logo">b-tools</div>
+  <p style="margin:0 0 20px;color:var(--mute)">Katalog aplikasi dan alat online pilihan. Semuanya gratis. Masuk untuk membuka katalog.</p>
+  <button class="btn" id="g" style="width:100%">Masuk dengan Google</button>
+  <div class="msg" id="m"></div><p class="msg"><a href="admin">Masuk sebagai admin</a></p>
+</div></main>
+
+<div id="app" class="hide">
+ <header class="hd"><div class="lg"><div class="mk">b</div><b>b-tools</b></div>
+  <div class="ac"><button class="ib" id="bell">🔔<i id="bd">1</i></button><button class="ib" id="th">🌙</button><button class="ib" id="mn">☰</button></div>
+  <div class="menu hide" id="menu"><a href="admin">Admin</a><button id="out">Keluar</button></div></header>
+ <nav class="tabs" id="tabs"></nav>
+ <div class="wrap">
+  <div class="sr"><input id="q" placeholder="Cari aplikasi atau kategori…"><span>🔍</span></div>
+  <section class="hero"><span class="pill">● BUKA 24 JAM</span><h1>b-tools</h1><p>KATALOG APLIKASI GRATIS TERPERCAYA</p><div class="mq"><span id="mqt"></span></div></section>
+  <div class="stats"><div><span class="num" id="s1">0</span>Aplikasi</div><div><span class="num" id="s2">0</span>Kategori</div><div><span class="num">100%</span>Gratis</div></div>
+  <div class="inst hide" id="inst"><div class="mk">b</div><div><b>Pasang aplikasi</b>Buka lebih cepat dari layar utama.</div><button class="btn sm" id="ins">Pasang</button><button class="x" id="ix">×</button></div>
+  <h2>Layanan <span>Cepat</span></h2>
+  <div class="qs"><button class="q" id="qa"><i>▦</i><b>Semua Aplikasi</b><small>Lihat seluruh katalog</small></button><a class="q" id="qr" target="_blank" rel="noopener"><i>✉</i><b>Request Aplikasi</b><small>Minta aplikasi baru</small></a></div>
+  <div id="top"><h2>Produk <span>Terlaris</span></h2><div class="row" id="toprow"></div></div>
+  <h2 id="ph">Semua <span>Produk</span></h2><div class="grid" id="grid"></div>
+ </div>
+ <div class="fl"><button id="up" aria-label="Ke atas">↑</button><a id="wa" class="hide" target="_blank" rel="noopener" aria-label="Bantuan">💬</a></div>
+</div>
+
+<div class="ov hide" id="pop"><div class="md"><h3 id="pt"></h3><img id="pi" alt=""><div class="mb"><p id="px"></p><a class="btn" id="pb" target="_blank" rel="noopener"></a>
+ <div class="mf"><label><input type="checkbox" id="pk">Sembunyikan 5 jam</label><button class="btn alt sm" id="pc">Tutup</button></div></div></div></div>
+
+<script type="module">
+import {auth,db,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut,collection,doc,getDoc,getDocs,setDoc,updateDoc,increment,query,orderBy} from "./firebase.js";
+const $=s=>document.querySelector(s),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+const http=u=>/^https?:\/\//i.test(u||"");const ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch(e){return null}};
+let apps=[],S={},favs=new Set(),tab="Semua",uid=null,ev=null;
+const R=document.documentElement;R.dataset.theme=ls("th")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+$("#th").onclick=()=>{R.dataset.theme=R.dataset.theme==="dark"?"light":"dark";ls("th",R.dataset.theme)};
+$("#mn").onclick=()=>$("#menu").classList.toggle("hide");$("#up").onclick=()=>scrollTo({top:0,behavior:"smooth"});
+$("#g").onclick=async()=>{const p=new GoogleAuthProvider(),m=$("#m");m.className="msg";m.textContent="Membuka Google…";
+ try{await signInWithPopup(auth,p)}catch(e){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code))await signInWithRedirect(auth,p);else{m.className="msg err";m.textContent="Gagal masuk: "+(e.code||"coba lagi")}}};
+$("#out").onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async u=>{
+ $("#login").classList.toggle("hide",!!u);$("#app").classList.toggle("hide",!u);if(!u)return;uid=u.uid;
+ try{S=(await getDoc(doc(db,"settings","main"))).data()||{}}catch(e){}
+ try{favs=new Set(((await getDoc(doc(db,"users",uid))).data()||{}).favs||[])}catch(e){}
+ try{apps=(await getDocs(query(collection(db,"apps"),orderBy("name")))).docs.map(d=>({id:d.id,...d.data()}))}
+ catch(e){$("#grid").replaceChildren(mk("p","msg err","Gagal memuat katalog. Periksa aturan Firestore."))}
+ $("#mqt").textContent=S.marquee||"Aplikasi gratis pilihan • Update setiap hari";
+ $("#qr").href=http(S.wa)?S.wa:"#";if(http(S.wa)){$("#wa").href=S.wa;$("#wa").classList.remove("hide")}
+ $("#bd").classList.toggle("hide",!S.annOn);render();if(S.annOn&&!hidden())pop()});
+/* pengumuman */
+function hidden(){try{const h=JSON.parse(ls("hide")||"{}");return h.v===S.annVer&&Date.now()-h.t<5*36e5}catch(e){return false}}
+function pop(){$("#pt").textContent=S.annTitle||"Pengumuman";$("#pi").classList.toggle("hide",!http(S.annImage));if(http(S.annImage))$("#pi").src=S.annImage;
+ $("#px").textContent=S.annText||"";$("#pb").classList.toggle("hide",!(S.annBtn&&http(S.annLink)));$("#pb").textContent=S.annBtn||"";$("#pb").href=S.annLink||"#";$("#pk").checked=false;$("#pop").classList.remove("hide")}
+$("#pc").onclick=()=>{if($("#pk").checked)ls("hide",JSON.stringify({v:S.annVer,t:Date.now()}));$("#pop").classList.add("hide")};
+$("#bell").onclick=()=>S.annOn?pop():alert("Belum ada pengumuman.");
+/* katalog */
+function card(a,rank){const d=mk("article","app"),im=mk("div","im");
+ if(http(a.image)){const i=new Image();i.src=a.image;i.alt="";i.loading="lazy";i.referrerPolicy="no-referrer";im.append(i)}else im.textContent=a.icon||"🧰";
+ if(rank)im.append(mk("span","rank","#"+rank));else if(a.hot)im.append(mk("span","hot","🔥 HOT"));
+ const h=mk("button","hrt"+(favs.has(a.id)?" on":""),"♥");h.setAttribute("aria-label","Favorit");
+ h.onclick=async()=>{favs.has(a.id)?favs.delete(a.id):favs.add(a.id);try{await setDoc(doc(db,"users",uid),{favs:[...favs]})}catch(e){}render()};
+ d.append(h,im,mk("span","st","TERSEDIA"),mk("small","",a.category||"Umum"),mk("h3","",a.name),mk("span","gr","GRATIS"));
+ if(http(a.url)){const l=mk("a","btn sm","Buka ↗");l.href=a.url;l.target="_blank";l.rel="noopener noreferrer";l.onclick=()=>updateDoc(doc(db,"apps",a.id),{clicks:increment(1)}).catch(()=>{});d.append(l)}return d}
+function render(){const q=$("#q").value.toLowerCase(),cats=[...new Set(apps.map(a=>a.category).filter(Boolean))];
+ const chip=(n,c,k)=>{const b=mk("button","chip"+(tab===k?" on":""));b.append(n,mk("em","",c));b.onclick=()=>{tab=k;render()};return b};
+ $("#tabs").replaceChildren(chip("Semua",apps.length,"Semua"),chip("♥ Favorit",favs.size,"Favorit"),...cats.map(c=>chip(c,apps.filter(a=>a.category===c).length,c)));
+ const L=apps.filter(a=>(tab==="Semua"||(tab==="Favorit"?favs.has(a.id):a.category===tab))&&((a.name||"")+(a.desc||"")+(a.category||"")).toLowerCase().includes(q));
+ const top=apps.filter(a=>a.clicks>0).sort((a,b)=>b.clicks-a.clicks).slice(0,6);
+ $("#top").classList.toggle("hide",!(tab==="Semua"&&!q&&top.length));$("#toprow").replaceChildren(...top.map((a,i)=>card(a,i+1)));
+ $("#grid").replaceChildren(...(L.length?L.map(a=>card(a)):[mk("p","empty",tab==="Favorit"?"Belum ada favorit. Ketuk ♥ pada aplikasi.":"Tidak ada aplikasi.")]));
+ $("#s1").textContent=apps.length;$("#s2").textContent=cats.length}
+$("#q").oninput=render;$("#qa").onclick=()=>{tab="Semua";$("#q").value="";render();$("#ph").scrollIntoView({behavior:"smooth"})};
+/* pasang aplikasi */
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;if(!ls("noinst"))$("#inst").classList.remove("hide")});
+$("#ins").onclick=async()=>{if(ev){ev.prompt();ev=null}$("#inst").classList.add("hide")};$("#ix").onclick=()=>{ls("noinst","1");$("#inst").classList.add("hide")};
+</script></body></html>
