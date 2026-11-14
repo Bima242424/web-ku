@@ -117,4 +117,6 @@ async function detail(id){const a=apps.find(x=>x.id===id),D=$("#detail");
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();ev=e;if(!ls("noinst"))$("#inst").classList.remove("hide")});
 $("#ins").onclick=async()=>{if(ev){ev.prompt();ev=null}$("#inst").classList.add("hide")};$("#ix").onclick=()=>{ls("noinst","1");$("#inst").classList.add("hide")};
-</script></body></html>
+</script>
+<script type="module" src="ads.js"></script>
+</body></html>

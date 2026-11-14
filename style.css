@@ -121,3 +121,8 @@ h2{font-size:26px;font-weight:800;margin:28px 0 12px}h2::after{content:"";displa
 .btn .ic{display:inline-block;vertical-align:-.17em;width:1.1em;height:1.1em}
 .stars button{display:grid;place-items:center}.stars button .ic{width:36px;height:36px}.stars button.on .ic{fill:currentColor}
 .q i{border-radius:14px}
+
+/* ===== slot iklan (AdSense) ===== */
+.adbox{margin:20px 0;text-align:center;overflow:hidden;border-radius:16px}
+.adbox small{display:block;color:var(--mute);font:700 10px "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.adbox:has(ins[data-ad-status=unfilled]){display:none}
