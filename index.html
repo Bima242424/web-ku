@@ -3,30 +3,30 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>b-tools — Katalog Aplikasi Gratis</title><meta name="theme-color" content="#d92d20">
 <link rel="manifest" href="manifest.webmanifest">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head><body>
 <main id="login" class="center"><div class="plate">
-  <div class="mk">b</div><div class="logo">b-tools<i>.</i></div>
-  <p style="margin:0 0 20px;color:var(--mute)">Rak aplikasi dan alat online pilihan. Semuanya gratis. Masuk untuk membuka rak.</p>
+  <div class="mk">b</div><div class="logo">b-tools</div>
+  <p style="margin:0 0 20px;color:var(--mute)">Katalog aplikasi dan alat online pilihan. Semuanya gratis. Masuk untuk membuka katalog.</p>
   <button class="btn" id="g" style="width:100%">Masuk dengan Google</button>
   <div class="msg" id="m"></div><p class="msg"><a href="admin">Masuk sebagai admin</a></p>
 </div></main>
 
 <div id="app" class="hide">
- <header class="hd"><div class="lg"><div class="mk">b</div><b>b-tools<i>.</i></b></div>
-  <div class="ac"><button class="ib" id="bell">🔔<i id="bd">1</i></button><button class="ib" id="th">◐</button><button class="ib" id="mn">≡</button></div>
+ <header class="hd"><div class="lg"><div class="mk">b</div><b>b-tools</b></div>
+  <div class="ac"><button class="ib" id="bell">🔔<i id="bd">1</i></button><button class="ib" id="th">🌙</button><button class="ib" id="mn">☰</button></div>
   <div class="menu hide" id="menu"><a href="admin">Admin</a><button id="out">Keluar</button></div></header>
  <nav class="tabs" id="tabs"></nav>
  <div class="wrap" id="home">
-  <div class="sr"><span>⌕</span><input id="q" placeholder="Ketik untuk mencari…"></div>
-  <section class="hero"><span class="pill">STATUS: ONLINE</span><h1>Rak aplikasi gratis.</h1><p>Dipilih manual. Tanpa checkout, tanpa biaya.</p><div class="mq"><span id="mqt"></span></div></section>
-  <div class="stats"><div><span class="num" id="s1">0</span>aplikasi</div><div><span class="num" id="s2">0</span>kategori</div><div><span class="num">Rp0</span>biaya</div></div>
+  <section class="hero"><span class="pill">● SELALU ONLINE</span><h1>Rak Aplikasi Gratis</h1><p>KATALOG PILIHAN, TANPA CHECKOUT</p><div class="mq"><span id="mqt"></span></div></section>
+  <div class="sr"><input id="q" placeholder="Cari aplikasi atau kategori…"><span>🔍</span></div>
+  <div class="stats"><div><span class="num" id="s1">0</span>Aplikasi</div><div><span class="num" id="s2">0</span>Kategori</div><div><span class="num">Rp0</span>Biaya</div></div>
   <div class="inst hide" id="inst"><div class="mk">b</div><div><b>Simpan ke layar utama</b>Akses lebih cepat tanpa buka browser.</div><button class="btn sm" id="ins">Simpan</button><button class="x" id="ix">×</button></div>
-  <h2>01 / Pintasan</h2>
-  <div class="qs"><button class="q" id="qa"><i>▦</i><b>Lihat semua</b><small>Buka seluruh katalog</small></button><a class="q" id="qr" target="_blank" rel="noopener"><i>✉</i><b>Minta aplikasi</b><small>Kirim permintaan lewat WhatsApp</small></a></div>
-  <div id="top"><h2>02 / Paling sering dibuka</h2><div class="row" id="toprow"></div></div>
-  <h2 id="ph">03 / Katalog</h2><div class="grid" id="grid"></div>
+  <h2>Pintasan</h2>
+  <div class="qs"><button class="q" id="qa"><i>▦</i><b>Lihat semua</b><small>Buka seluruh katalog</small></button><a class="q" id="qr" target="_blank" rel="noopener"><i>✉</i><b>Minta aplikasi</b><small>Kirim lewat WhatsApp</small></a></div>
+  <div id="top"><h2>Paling <span>Sering Dibuka</span></h2><div class="row" id="toprow"></div></div>
+  <h2 id="ph">Katalog <span>Lengkap</span></h2><div class="grid" id="grid"></div>
  </div>
  <div class="wrap hide" id="detail"></div>
  <div class="fl"><button id="up" aria-label="Ke atas">↑</button><a id="wa" class="hide" target="_blank" rel="noopener" aria-label="Bantuan">💬</a></div>
@@ -72,11 +72,11 @@ $("#nx").onclick=()=>$("#nf").classList.add("hide");$("#nf").onclick=e=>{if(e.ta
 /* katalog */
 function card(a,rank){const d=mk("article","app"),im=mk("div","im");
  if(http(a.image)){const i=new Image();i.src=a.image;i.alt="";i.loading="lazy";i.referrerPolicy="no-referrer";im.append(i)}else im.textContent=a.icon||"🧰";
- if(rank)im.append(mk("span","rank","#"+rank));else if(a.hot)im.append(mk("span","hot","HOT"));
+ if(rank)im.append(mk("span","rank","#"+rank));else if(a.hot)im.append(mk("span","hot","🔥 HOT"));
  const h=mk("button","hrt"+(favs.has(a.id)?" on":""),"♥");h.setAttribute("aria-label","Favorit");
  h.onclick=async()=>{favs.has(a.id)?favs.delete(a.id):favs.add(a.id);try{await setDoc(doc(db,"users",uid),{favs:[...favs]})}catch(e){}render()};
  d.append(h,im,mk("span","st","AKTIF"),mk("small","",a.category||"Umum"),mk("h3","",a.name),mk("span","gr","GRATIS"));
- const l=mk("a","btn sm","Lihat →");l.href="#app-"+a.id;d.append(l);d.style.cursor="pointer";d.onclick=e=>{if(!e.target.closest(".hrt")&&!e.target.closest("a"))location.hash="app-"+a.id};return d}
+ const l=mk("a","btn sm","Buka ↗");l.href="#app-"+a.id;d.append(l);d.style.cursor="pointer";d.onclick=e=>{if(!e.target.closest(".hrt")&&!e.target.closest("a"))location.hash="app-"+a.id};return d}
 function render(){const q=$("#q").value.toLowerCase(),cats=[...new Set(apps.map(a=>a.category).filter(Boolean))];
  const chip=(n,c,k)=>{const b=mk("button","chip"+(tab===k?" on":""));b.append(n,mk("em","",c));b.onclick=()=>{tab=k;render()};return b};
  $("#tabs").replaceChildren(chip("Semua",apps.length,"Semua"),chip("♥ Favorit",favs.size,"Favorit"),...cats.map(c=>chip(c,apps.filter(a=>a.category===c).length,c)));
