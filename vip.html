@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verifikasi VIP — b-tools</title><meta name="theme-color" content="#d92d20">
+<link rel="manifest" href="manifest.webmanifest">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<main id="login" class="center"><div class="plate">
+  <div class="mk">b</div><div class="logo">VIP</div>
+  <p style="margin:0 0 20px;color:var(--mute)">Masuk dengan akun Google yang sama seperti di b-tools, lalu verifikasi key VIP kamu.</p>
+  <button class="btn" id="g" style="width:100%">Masuk dengan Google</button><div class="msg" id="m"></div>
+</div></main>
+
+<div id="app" class="hide">
+ <header class="hd"><div class="lg"><div class="mk">b</div><b>b-tools VIP</b></div><button class="btn alt sm" id="out">Keluar</button></header>
+ <div class="wrap">
+  <section class="hero" id="st" style="margin-top:16px;padding-bottom:26px"><div class="ht"><span class="pill" id="vs">Memuat…</span><h1>Aktifkan VIP</h1><p>FILE EKSKLUSIF · TANPA IKLAN</p></div></section>
+  <div class="panel">
+    <label>Key VIP</label>
+    <input id="k" class="keyin" placeholder="VIP-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24">
+    <button class="btn" id="v" style="width:100%;margin-top:14px">Verifikasi key</button>
+    <div class="msg" id="vm"></div>
+  </div>
+  <div class="panel perk"><h3>Keuntungan VIP</h3><ul><li>Akses semua file khusus VIP</li><li>Tanpa iklan dan tanpa hitung mundur</li><li>Key dan link eksklusif untuk member</li></ul></div>
+  <div class="r2" style="margin-top:16px"><a class="btn alt hide" id="buy" target="_blank" rel="noopener">Beli key VIP</a><a class="btn" id="back" href="/">Kembali ke b-tools</a></div>
+ </div>
+</div>
+<script type="module">
+import {auth,db,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut,doc,getDoc} from "./firebase.js";
+import {MAIN_URL} from "./config.js";
+const $=s=>document.querySelector(s);
+try{document.documentElement.dataset.theme=localStorage.getItem("th")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}catch(e){}
+const fmt=ms=>new Date(ms).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+let user=null;
+$("#g").onclick=async()=>{const p=new GoogleAuthProvider(),m=$("#m");m.className="msg";m.textContent="Membuka Google…";
+ try{await signInWithPopup(auth,p)}catch(e){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code))await signInWithRedirect(auth,p);else{m.className="msg err";m.textContent="Gagal masuk: "+(e.code||"coba lagi")}}};
+$("#out").onclick=()=>signOut(auth);
+const status=ms=>{$("#vs").textContent=ms>Date.now()?"VIP aktif sampai "+fmt(ms):"Belum VIP";$("#st").classList.toggle("on",ms>Date.now())};
+onAuthStateChanged(auth,async u=>{
+ $("#login").classList.toggle("hide",!!u);$("#app").classList.toggle("hide",!u);if(!u)return;user=u;$("#back").href=MAIN_URL||"/";
+ try{const s=await getDoc(doc(db,"vips",u.uid));status(s.exists()&&s.data().until?s.data().until.toMillis():0)}catch(e){status(0)}
+ try{const w=(await getDoc(doc(db,"settings","main"))).data()||{};if(/^https?:\/\//.test(w.wa||"")){$("#buy").href=w.wa;$("#buy").classList.remove("hide")}}catch(e){}});
+$("#v").onclick=async()=>{const m=$("#vm"),k=$("#k").value.trim();if(!k)return;m.className="msg";m.textContent="Memverifikasi…";$("#v").disabled=true;
+ try{const t=await user.getIdToken(),r=await fetch("/api/vip",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+t},body:JSON.stringify({action:"redeem",key:k})}),j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.error||"Gagal memverifikasi.");status(j.until);$("#k").value="";m.className="msg ok";m.textContent="Berhasil! VIP kamu aktif. Buka b-tools untuk mengakses file VIP."}
+ catch(e){m.className="msg err";m.textContent=e.message}$("#v").disabled=false};
+</script></body></html>

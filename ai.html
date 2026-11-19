@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tanya AI — b-tools</title><meta name="theme-color" content="#d92d20">
+<link rel="manifest" href="manifest.webmanifest">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header class="hd"><div class="lg"><div class="mk">b</div><b>Tanya AI</b></div><a class="btn alt sm" href="/">← Beranda</a></header>
+<div class="ai hide" id="ai">
+  <div class="aim" id="models"></div>
+  <div class="aimsg" id="log"></div>
+  <div class="aisug" id="sug"></div>
+  <form class="aibar" id="f"><input id="t" placeholder="Tanya soal web ini…" maxlength="500" autocomplete="off"><button class="btn" id="s">Kirim</button></form>
+</div>
+<script type="module">
+import {auth,onAuthStateChanged} from "./firebase.js";
+const $=s=>document.querySelector(s),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+try{document.documentElement.dataset.theme=localStorage.getItem("th")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}catch(e){}
+const MODELS=[["gemini","Gemini"],["claude","Claude"],["chatgpt","ChatGPT"]];
+const SUG=["Web ini tentang apa?","Cara mengunduh aplikasi?","Cara pakai key?","Link rusak, harus gimana?","Cara simpan ke layar utama?"];
+let model="gemini",on={},hist=[],busy=false,user=null,started=false;
+onAuthStateChanged(auth,u=>{if(!u){location.replace("/");return}user=u;if(!started){started=true;start()}});
+const add=(role,text)=>{const b=mk("div","bub "+role,text);$("#log").append(b);b.scrollIntoView({block:"end",behavior:"smooth"});return b};
+function drawModels(){$("#models").replaceChildren(...MODELS.map(([k,n])=>{const b=mk("button","chip"+(k===model?" on":""));b.type="button";b.disabled=!on[k];
+ b.append(n,mk("em","",on[k]?"aktif":"belum"));b.onclick=()=>{model=k;try{localStorage.setItem("aim",k)}catch(e){}drawModels();add("bot","Beralih ke "+n+". Silakan lanjut bertanya.")};return b}))}
+async function start(){
+ try{on=await(await fetch("/api/chat")).json()}catch(e){on={}}
+ try{const s=localStorage.getItem("aim");if(on[s])model=s}catch(e){}
+ if(!on[model])model=MODELS.map(m=>m[0]).find(k=>on[k])||"gemini";
+ drawModels();$("#ai").classList.remove("hide");
+ if(!Object.values(on).some(Boolean)){add("bot","Asisten AI belum diaktifkan. Admin perlu mengisi API key di pengaturan Vercel.");$("#t").disabled=$("#s").disabled=true;return}
+ add("bot","Halo! Aku asisten b-tools. Tanyakan apa saja soal web ini: isinya, cara unduh, key, favorit, atau fitur lainnya.");
+ $("#sug").replaceChildren(...SUG.map(q=>{const b=mk("button","chip",q);b.type="button";b.onclick=()=>send(q);return b}))}
+async function send(q){q=(q||$("#t").value).trim();if(!q||busy||!on[model])return;
+ busy=true;$("#t").value="";$("#sug").classList.add("hide");add("me",q);hist.push({role:"user",content:q});
+ const w=add("bot","Mengetik…");w.classList.add("typing");
+ try{const tok=await user.getIdToken(),r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:JSON.stringify({model,messages:hist.slice(-11)})});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Gagal menghubungi AI.");
+  w.classList.remove("typing");w.textContent=j.reply;hist.push({role:"assistant",content:j.reply})}
+ catch(e){w.classList.remove("typing");w.classList.add("err");w.textContent=e.message;hist.pop()}
+ busy=false;w.scrollIntoView({block:"end",behavior:"smooth"})}
+$("#f").onsubmit=e=>{e.preventDefault();send()};
+</script></body></html>

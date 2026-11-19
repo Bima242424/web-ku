@@ -1,1 +1,7 @@
-{ "cleanUrls": true }
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "has": [{ "type": "host", "value": "vip.DOMAIN-ANDA.com" }], "destination": "/vip.html" }
+  ],
+  "functions": { "api/chat.js": { "maxDuration": 30 }, "api/vip.js": { "maxDuration": 15 } }
+}

@@ -33,3 +33,27 @@ Stack 100% gratis: HTML statis (Vercel Hobby) + Firebase Auth & Firestore (paket
 - Semua data (aplikasi, rating, laporan) disimpan di Firestore, bukan di perangkat, jadi sama untuk semua user.
 - File APK: unggah ke Google Drive / Mediafire / GitHub Releases, lalu tempel linknya di admin.
 - Publish ulang `firestore.rules` (ada aturan baru untuk rating dan laporan).
+
+## Halaman Tanya AI (`/ai`)
+Asisten AI yang menjelaskan web ini dan menjawab pertanyaan cara pakainya. Berjalan lewat Vercel Serverless Function (`api/chat.js`), jadi API key aman di server dan tidak terlihat di browser. Hanya user yang sudah login yang bisa memakainya.
+
+Vercel > Project > Settings > Environment Variables, tambahkan (lalu Redeploy):
+- `GEMINI_API_KEY` : gratis, buat di aistudio.google.com/apikey
+- `ANTHROPIC_API_KEY` : opsional, untuk Claude (API berbayar)
+- `OPENAI_API_KEY` : opsional, untuk ChatGPT (API berbayar)
+- Opsional ganti model: `GEMINI_MODEL`, `CLAUDE_MODEL`, `OPENAI_MODEL`
+
+Model tanpa key tampil "belum" dan tidak bisa dipilih. Admin bisa menambah penjelasan khusus lewat `/admin` bagian "Info untuk Asisten AI". AI juga otomatis tahu daftar aplikasi di katalog (key dan link tidak dikirim ke AI).
+
+## Update: unlock unduhan, VIP, 2 domain, animasi
+**Unlock per aplikasi (admin > Kelola Aplikasi > "Cara membuka unduhan"):** Langsung / Iklan AdSense (hitung mundur + iklan) / Link iklan lain (user buka link sponsor dulu, lalu hitung mundur). Member VIP otomatis melewati semua unlock.
+
+**VIP:** aplikasi dengan centang "Khusus VIP" menyimpan link & key di koleksi `vipLinks` yang hanya bisa dibaca member VIP aktif (dijaga aturan Firestore). Admin membuat key / menambah member di bagian "Member VIP". User mengaktifkan di `vip.html` (web verifikasi).
+
+**Setup sekali:**
+1. Firebase > Project settings > Service accounts > Generate new private key. Salin seluruh isi JSON ke Vercel > Environment Variables > `FIREBASE_SERVICE_ACCOUNT`, lalu Redeploy.
+2. Publish ulang `firestore.rules` di Firebase.
+3. Vercel > Settings > Domains: tambahkan domain utama dan domain baru (VIP) ke project yang sama.
+4. Firebase > Authentication > Settings > Authorized domains: tambahkan kedua domain.
+5. `vercel.json`: ganti `vip.DOMAIN-ANDA.com` dengan domain VIP Anda (tanpa https://).
+6. `config.js`: isi `MAIN_URL` dan `VIP_URL` dengan alamat lengkap kedua domain.
