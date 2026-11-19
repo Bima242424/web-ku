@@ -33,6 +33,7 @@ const $=s=>document.querySelector(s);
 try{document.documentElement.dataset.theme=localStorage.getItem("th")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}catch(e){}
 const fmt=ms=>new Date(ms).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
 let user=null;
+const waMsg=u=>{try{const x=new URL(u);if(/^(wa\.me|api\.whatsapp\.com)$/.test(x.host)&&!x.searchParams.has("text"))x.searchParams.set("text","Halo admin, saya mau beli key VIP b-tools.");return x.href}catch(e){return u}};
 $("#g").onclick=async()=>{const p=new GoogleAuthProvider(),m=$("#m");m.className="msg";m.textContent="Membuka Google…";
  try{await signInWithPopup(auth,p)}catch(e){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code))await signInWithRedirect(auth,p);else{m.className="msg err";m.textContent="Gagal masuk: "+(e.code||"coba lagi")}}};
 $("#out").onclick=()=>signOut(auth);
@@ -40,7 +41,7 @@ const status=ms=>{$("#vs").textContent=ms>Date.now()?"VIP aktif sampai "+fmt(ms)
 onAuthStateChanged(auth,async u=>{
  $("#login").classList.toggle("hide",!!u);$("#app").classList.toggle("hide",!u);if(!u)return;user=u;$("#back").href=MAIN_URL||"/";
  try{const s=await getDoc(doc(db,"vips",u.uid));status(s.exists()&&s.data().until?s.data().until.toMillis():0)}catch(e){status(0)}
- try{const w=(await getDoc(doc(db,"settings","main"))).data()||{};if(/^https?:\/\//.test(w.wa||"")){$("#buy").href=w.wa;$("#buy").classList.remove("hide")}}catch(e){}});
+ try{const w=(await getDoc(doc(db,"settings","main"))).data()||{};if(/^https?:\/\//.test(w.wa||"")){$("#buy").href=waMsg(w.wa);$("#buy").classList.remove("hide")}}catch(e){}});
 $("#v").onclick=async()=>{const m=$("#vm"),k=$("#k").value.trim();if(!k)return;m.className="msg";m.textContent="Memverifikasi…";$("#v").disabled=true;
  try{const t=await user.getIdToken(),r=await fetch("/api/vip",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+t},body:JSON.stringify({action:"redeem",key:k})}),j=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(j.error||"Gagal memverifikasi.");status(j.until);$("#k").value="";m.className="msg ok";m.textContent="Berhasil! VIP kamu aktif. Buka b-tools untuk mengakses file VIP."}
