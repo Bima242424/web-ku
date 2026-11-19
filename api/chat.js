@@ -3,7 +3,7 @@
 const FB_KEY = process.env.FIREBASE_API_KEY || "AIzaSyCpZVxLUBIpQqcu-9FqQr03s9D-U2pvNbg"; // kunci web Firebase (publik)
 const PROJECT = process.env.FIREBASE_PROJECT_ID || "bmzmod";
 const P = {
-  gemini:  { env: "GEMINI_API_KEY",    model: process.env.GEMINI_MODEL || "gemini-4-Hydrogen" },
+  gemini:  { env: "GEMINI_API_KEY",    model: process.env.GEMINI_MODEL || "gemini-4-hydrogen" },
   claude:  { env: "ANTHROPIC_API_KEY", model: process.env.CLAUDE_MODEL || "claude-haiku-5-5" },
   chatgpt: { env: "OPENAI_API_KEY",    model: process.env.OPENAI_MODEL || "gpt-4o-mini" }
 };
