@@ -3,7 +3,7 @@
 const FB_KEY = process.env.FIREBASE_API_KEY || "AIzaSyCpZVxLUBIpQqcu-9FqQr03s9D-U2pvNbg"; // kunci web Firebase (publik)
 const PROJECT = process.env.FIREBASE_PROJECT_ID || "bmzmod";
 const P = {
-  gemini:  { env: "GEMINI_API_KEY",    model: process.env.GEMINI_MODEL || "gemini-2.5-flash" },
+  gemini:  { env: "GEMINI_API_KEY",    model: process.env.GEMINI_MODEL || "gemini-4-Hydrogen" },
   claude:  { env: "ANTHROPIC_API_KEY", model: process.env.CLAUDE_MODEL || "claude-haiku-5-5" },
   chatgpt: { env: "OPENAI_API_KEY",    model: process.env.OPENAI_MODEL || "gpt-4o-mini" }
 };
@@ -67,8 +67,8 @@ async function knowledge(tok) {
   return { info: info.slice(0, 3000), list: list.slice(0, 6000) };
 }
 
-async function ask(name, sys, msgs) {
-  const { env, model } = P[name], key = process.env[env], sig = AbortSignal.timeout(25000);
+async function ask(name, sys, msgs, mdl) {
+  const env = P[name].env, model = mdl || P[name].model, key = (process.env[env] || "").trim(), sig = AbortSignal.timeout(25000);
   let r, pick;
   if (name === "gemini") {
     r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -121,13 +121,21 @@ module.exports = async (req, res) => {
     const k = await knowledge(tok);
     const sys = BASE + (k.list ? "\n\nDAFTAR APLIKASI DI KATALOG SAAT INI\n" + k.list : "") +
       (k.info ? "\n\nINFO TAMBAHAN DARI ADMIN\n" + k.info : "");
-    const reply = await ask(b.model, sys, m);
+    const tried = b.model === "gemini" ? [...new Set([P.gemini.model, "gemini-flash-latest", "gemini-2.5-flash", "gemini-2.0-flash"])] : [undefined];
+    let reply;
+    for (const mdl of tried) { // jika nama model tidak ditemukan (404), coba nama cadangan
+      try { reply = await ask(b.model, sys, m, mdl); break; }
+      catch (e) { if (e.status !== 404 || mdl === tried[tried.length - 1]) throw e; }
+    }
     return res.status(200).json({ reply: reply || "Maaf, aku belum bisa menjawab itu. Coba tanyakan dengan kalimat lain." });
   } catch (e) {
     const s = e.status;
-    const msg = s === 429 ? "Kuota model ini sedang penuh. Coba model lain atau tunggu sebentar."
-      : (s === 401 || s === 403) ? "Kunci API model ini bermasalah. Hubungi admin."
-      : e.name === "TimeoutError" ? "Model terlalu lama menjawab. Coba lagi." : "Gagal menghubungi model AI. Coba lagi nanti.";
+    const msg = s === 429 ? "Kuota model ini sedang penuh atau saldo habis (429). Coba model lain atau tunggu sebentar."
+      : (s === 401 || s === 403) ? "Kunci API ditolak (" + s + "). Periksa API key di Vercel."
+      : s === 400 ? "Permintaan ditolak (400). Biasanya API key salah salin atau tidak valid. Cek key di Vercel lalu Redeploy."
+      : s === 404 ? "Nama model tidak ditemukan (404). Isi GEMINI_MODEL / CLAUDE_MODEL / OPENAI_MODEL dengan nama model yang benar."
+      : e.name === "TimeoutError" ? "Model terlalu lama menjawab. Coba lagi."
+      : "Gagal menghubungi model AI (kode " + (s || e.name || "?") + "). Coba lagi nanti.";
     return res.status(502).json({ error: msg });
   }
 };
