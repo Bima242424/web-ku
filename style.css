@@ -127,7 +127,7 @@ h2{font-size:26px;font-weight:800;margin:28px 0 12px}h2::after{content:"";displa
 .adbox small{display:block;color:var(--mute);font:700 10px "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 .adbox:has(ins[data-ad-status=unfilled]){display:none}
 /* ===== halaman Tanya AI ===== */
-.q.ai{grid-column:1/-1}
+.q.qai{grid-column:1/-1}
 .ai{max-width:760px;margin:0 auto;padding:0 16px calc(100px + env(safe-area-inset-bottom,0px));min-height:calc(100vh - 70px)}
 .aim{display:flex;gap:8px;overflow-x:auto;padding:12px 0;position:sticky;top:70px;background:var(--bg);z-index:5;scrollbar-width:none}
 .chip:disabled{opacity:.45;cursor:not-allowed}
