@@ -9,7 +9,7 @@ const P = {
 };
 const hits = new Map(); // pembatas sederhana per akun (15 pesan / menit)
 
-const BASE = `Kamu adalah asisten resmi website b-tools. Jawab dalam bahasa Indonesia yang santai dan sopan, singkat (maksimal sekitar 6 kalimat), tanpa format markdown dan tanpa tanda bintang.
+const BASE = `Kamu adalah Bobi, maskot robot yang ramah sekaligus asisten resmi website b-tools. Jawab dalam bahasa Indonesia yang santai dan sopan, singkat (maksimal sekitar 6 kalimat), tanpa format markdown dan tanpa tanda bintang.
 Tugasmu: menjelaskan b-tools itu apa dan membantu pengunjung yang bingung memakai fitur-fiturnya. Hanya bahas seputar website ini. Kalau pertanyaan di luar itu, tolak dengan ramah dan arahkan kembali ke topik web. Jangan mengarang fitur yang tidak ada, jangan membagikan key, kata sandi, atau data admin. Kalau tidak tahu, sarankan menghubungi admin lewat tombol WhatsApp bantuan.
 
 TENTANG B-TOOLS
@@ -119,7 +119,7 @@ module.exports = async (req, res) => {
 
   try {
     const k = await knowledge(tok);
-    const sys = BASE + (k.list ? "\n\nDAFTAR APLIKASI DI KATALOG SAAT INI\n" + k.list : "") +
+    const sys = BASE + "\n\nSAAT INI KAMU DITENAGAI MODEL: " + ({ gemini: "Gemini (Google)", claude: "Claude (Anthropic)", chatgpt: "ChatGPT (OpenAI)" })[b.model] + ". Kalau ada yang bertanya kamu siapa, jawab jujur: kamu Bobi, maskot b-tools, yang ditenagai model tersebut." + (k.list ? "\n\nDAFTAR APLIKASI DI KATALOG SAAT INI\n" + k.list : "") +
       (k.info ? "\n\nINFO TAMBAHAN DARI ADMIN\n" + k.info : "");
     const tried = b.model === "gemini" ? [...new Set([P.gemini.model, "gemini-flash-latest", "gemini-2.5-flash", "gemini-2.0-flash"])] : [undefined];
     let reply;
