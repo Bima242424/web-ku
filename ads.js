@@ -24,6 +24,7 @@ if (/^ca-pub-\d+$/.test(CLIENT)) {
     ins.dataset.adFormat = "auto"; ins.dataset.fullWidthResponsive = "true";
     box.append(lb, ins); io.observe(ins); return box;
   };
+  window.BADS = { make, slot: SLOT_DETAIL };
 
   // 1) Beranda: di antara "Paling Sering Dibuka" dan "Katalog Lengkap"
   if (/^\d+$/.test(SLOT_HOME)) {

@@ -57,3 +57,6 @@ Model tanpa key tampil "belum" dan tidak bisa dipilih. Admin bisa menambah penje
 4. Firebase > Authentication > Settings > Authorized domains: tambahkan kedua domain.
 5. `vercel.json`: ganti `vip.DOMAIN-ANDA.com` dengan domain VIP Anda (tanpa https://).
 6. `config.js`: isi `MAIN_URL` dan `VIP_URL` dengan alamat lengkap kedua domain.
+
+## Update: partikel & animasi aksi
+`fx.js` menambah partikel latar halus (glow merah/oranye yang melayang pelan), efek ripple saat tombol disentuh, dan letupan kecil saat aksi (favorit, rating, salin key, unduhan terbuka, VIP berhasil). Otomatis mati jika perangkat memilih "kurangi gerak" atau mode hemat data.

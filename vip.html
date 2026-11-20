@@ -5,6 +5,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="fx.js" defer></script>
 </head><body>
 <main id="login" class="center"><div class="plate">
   <div class="mk">b</div><div class="logo">VIP</div>
@@ -44,6 +45,6 @@ onAuthStateChanged(auth,async u=>{
  try{const w=(await getDoc(doc(db,"settings","main"))).data()||{};if(/^https?:\/\//.test(w.wa||"")){$("#buy").href=waMsg(w.wa);$("#buy").classList.remove("hide")}}catch(e){}});
 $("#v").onclick=async()=>{const m=$("#vm"),k=$("#k").value.trim();if(!k)return;m.className="msg";m.textContent="Memverifikasi…";$("#v").disabled=true;
  try{const t=await user.getIdToken(),r=await fetch("/api/vip",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+t},body:JSON.stringify({action:"redeem",key:k})}),j=await r.json().catch(()=>({}));
-  if(!r.ok)throw new Error(j.error||"Gagal memverifikasi.");status(j.until);$("#k").value="";m.className="msg ok";m.textContent="Berhasil! VIP kamu aktif. Buka b-tools untuk mengakses file VIP."}
- catch(e){m.className="msg err";m.textContent=e.message}$("#v").disabled=false};
+  if(!r.ok)throw new Error(j.error||"Gagal memverifikasi.");status(j.until);$("#k").value="";$("#st").classList.remove("glow");void $("#st").offsetWidth;$("#st").classList.add("glow");window.FX&&FX.at($("#vs"),{n:36,s:3.2,up:2.2,c:["255,200,60","255,154,31","255,226,138","255,255,255"]});m.className="msg ok";m.textContent="Berhasil! VIP kamu aktif. Buka b-tools untuk mengakses file VIP."}
+ catch(e){m.className="msg err";m.textContent=e.message;const ki=$("#k");ki.classList.remove("shake");void ki.offsetWidth;ki.classList.add("shake")}$("#v").disabled=false};
 </script></body></html>

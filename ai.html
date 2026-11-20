@@ -5,6 +5,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="fx.js" defer></script>
 </head><body>
 <header class="hd"><div class="lg"><div class="mk">b</div><b>Tanya AI</b></div><a class="btn alt sm" href="/">← Beranda</a></header>
 <div class="ai hide" id="ai">
@@ -34,7 +35,7 @@ async function start(){
  $("#sug").replaceChildren(...SUG.map(q=>{const b=mk("button","chip",q);b.type="button";b.onclick=()=>send(q);return b}))}
 async function send(q){q=(q||$("#t").value).trim();if(!q||busy||!on[model])return;
  busy=true;$("#t").value="";$("#sug").classList.add("hide");add("me",q);hist.push({role:"user",content:q});
- const w=add("bot","Mengetik…");w.classList.add("typing");
+ const w=add("bot","Mengetik");w.classList.add("typing");
  try{const tok=await user.getIdToken(),r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:JSON.stringify({model,messages:hist.slice(-11)})});
   const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Gagal menghubungi AI.");
   w.classList.remove("typing");w.textContent=j.reply;hist.push({role:"assistant",content:j.reply})}
