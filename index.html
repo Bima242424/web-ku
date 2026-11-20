@@ -6,6 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="fx.js" defer></script>
+<script src="sfx.js" defer></script>
 </head><body>
 <main id="login" class="center"><div class="plate">
   <div class="mk">b</div><div class="logo">b-tools</div>
@@ -17,7 +18,7 @@
 <div id="app" class="hide">
  <header class="hd"><div class="lg"><div class="mk">b</div><b>b-tools</b></div>
   <div class="ac"><button class="ib" id="bell" aria-label="Pemberitahuan"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i id="bd">1</i></button><button class="ib" id="th" aria-label="Ganti tema"><svg class="ic moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><svg class="ic sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button><button class="ib" id="mn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button></div>
-  <div class="menu hide" id="menu"><a id="vipl" href="vip">Jadi VIP</a><a href="ai">Tanya AI</a><a href="admin">Admin</a><button id="out">Keluar</button></div></header>
+  <div class="menu hide" id="menu"><a id="vipl" href="vip">Jadi VIP</a><a href="ai">Tanya AI</a><a href="admin">Admin</a><button id="snd">Suara: nyala</button><button id="out">Keluar</button></div></header>
  <nav class="tabs" id="tabs"></nav>
  <div class="wrap" id="home">
   <div class="mq"><span id="mqt"></span></div>
@@ -49,6 +50,7 @@ const I={'bell': '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d
 let apps=[],S={},favs=new Set(),tab="Semua",uid=null,ev=null,isVip=false,vipUntil=0,cdT=null,anim=true,lastFav=null;
 const R=document.documentElement;R.dataset.theme=ls("th")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
 $("#th").onclick=()=>{R.classList.add("tt");setTimeout(()=>R.classList.remove("tt"),450);const tb=$("#th");tb.classList.remove("spin");void tb.offsetWidth;tb.classList.add("spin");R.dataset.theme=R.dataset.theme==="dark"?"light":"dark";ls("th",R.dataset.theme)};
+const sn=$("#snd"),sl=()=>{sn.textContent="Suara: "+(window.SFX&&SFX.isOn()?"nyala":"mati")};sn.onclick=()=>{if(window.SFX){SFX.toggle();sl();SFX.play("pop")}};sl();
 $("#mn").onclick=()=>$("#menu").classList.toggle("hide");$("#up").onclick=()=>scrollTo({top:0,behavior:"smooth"});
 $("#g").onclick=async()=>{const p=new GoogleAuthProvider(),m=$("#m");m.className="msg";m.textContent="Membuka Google…";
  try{await signInWithPopup(auth,p)}catch(e){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code))await signInWithRedirect(auth,p);else{m.className="msg err";m.textContent="Gagal masuk: "+(e.code||"coba lagi")}}};
@@ -83,7 +85,7 @@ function card(a,rank,idx){const d=mk("article","app"),im=mk("div","im");d.style.
  if(http(a.image)){const i=new Image();i.src=a.image;i.alt="";i.loading="lazy";i.referrerPolicy="no-referrer";im.append(i)}else im.textContent=a.icon||"🧰";
  if(rank)im.append(mk("span","rank","#"+rank));else if(a.vip)im.append(mk("span","vipb","VIP"));else if(a.hot)im.append(mk("span","hot","HOT"));
  const h=mk("button","hrt"+(favs.has(a.id)?" on":"")+(a.id===lastFav?" pop":""));h.innerHTML=I.heart;h.setAttribute("aria-label","Favorit");
- h.onclick=async()=>{favs.has(a.id)?favs.delete(a.id):favs.add(a.id);if(favs.has(a.id)&&window.FX)FX.at(h,{ch:"♥",c:["255,84,112","255,140,120","255,196,200"],n:9,s:1.8,up:1.5});try{await setDoc(doc(db,"users",uid),{favs:[...favs]})}catch(e){}lastFav=a.id;render();lastFav=null};
+ h.onclick=async()=>{favs.has(a.id)?favs.delete(a.id):favs.add(a.id);window.SFX&&SFX.play(favs.has(a.id)?"pop":"off");if(favs.has(a.id)&&window.FX)FX.at(h,{ch:"♥",c:["255,84,112","255,140,120","255,196,200"],n:9,s:1.8,up:1.5});try{await setDoc(doc(db,"users",uid),{favs:[...favs]})}catch(e){}lastFav=a.id;render();lastFav=null};
  d.append(h,im,mk("span","st","AKTIF"),mk("small","",a.category||"Umum"),mk("h3","",a.name),mk("span","gr",a.vip?"VIP":"GRATIS"));
  const l=mk("a","btn sm","Buka ");l.insertAdjacentHTML("beforeend",I.out);l.href="#app-"+a.id;d.append(l);d.style.cursor="pointer";d.onclick=e=>{if(!e.target.closest(".hrt")&&!e.target.closest("a"))location.hash="app-"+a.id};return d}
 function render(){const q=$("#q").value.toLowerCase(),cats=[...new Set(apps.map(a=>a.category).filter(Boolean))];
@@ -114,12 +116,12 @@ async function detail(id){clearInterval(cdT);const a=apps.find(x=>x.id===id),D=$
  body.append(ks);
  const st=mk("div","stars"),rt=mk("p","","Memuat rating…");body.append(C("Beri rating",st,rt));
  const rp=mk("button","btn alt","Link rusak? Laporkan"),bk=mk("button","btn alt"," Kembali ke katalog");bk.insertAdjacentHTML("afterbegin",I.back);
- rp.onclick=async()=>{try{await setDoc(doc(db,"reports",id+"_"+uid),{appId:id,name:a.name,uid,at:serverTimestamp()});rp.textContent="✓ Laporan terkirim, terima kasih";rp.disabled=true;rp.classList.add("okk")}catch(e){rp.textContent="Gagal mengirim laporan"}};
+ rp.onclick=async()=>{try{await setDoc(doc(db,"reports",id+"_"+uid),{appId:id,name:a.name,uid,at:serverTimestamp()});rp.textContent="✓ Laporan terkirim, terima kasih";rp.disabled=true;rp.classList.add("okk");window.SFX&&SFX.play("pop")}catch(e){rp.textContent="Gagal mengirim laporan"}};
  bk.onclick=()=>{location.hash=""};rp.style.cssText=bk.style.cssText="width:100%;margin-top:14px;border-radius:16px";
  body.append(rp,bk);box.append(dh,body);D.replaceChildren(bc,box);unlock(a,ub,ks);
  const R={};try{(await getDocs(collection(db,"apps",id,"ratings"))).forEach(d=>{R[d.id]=d.data().v})}catch(e){}
  const draw=()=>{const v=Object.values(R),avg=v.length?v.reduce((x,y)=>x+y,0)/v.length:0;
-  st.replaceChildren(...[1,2,3,4,5].map(n=>{const b=mk("button",(R[uid]||0)>=n?"on":"");b.innerHTML=I.star;b.setAttribute("aria-label",n+" bintang");b.style.setProperty("--s",n);b.onclick=async()=>{try{await setDoc(doc(db,"apps",id,"ratings",uid),{v:n});R[uid]=n;window.FX&&FX.at(b,{ch:"★",c:["232,169,0","255,200,60"],n:8,s:1.8});draw()}catch(e){}};return b}));
+  st.replaceChildren(...[1,2,3,4,5].map(n=>{const b=mk("button",(R[uid]||0)>=n?"on":"");b.innerHTML=I.star;b.setAttribute("aria-label",n+" bintang");b.style.setProperty("--s",n);b.onclick=async()=>{try{await setDoc(doc(db,"apps",id,"ratings",uid),{v:n});R[uid]=n;window.SFX&&SFX.play("star",n);window.FX&&FX.at(b,{ch:"★",c:["232,169,0","255,200,60"],n:8,s:1.8});draw()}catch(e){}};return b}));
   rt.textContent=v.length?avg.toFixed(1)+" / 5 dari "+v.length+" rating":"Belum ada rating. Jadilah yang pertama!"};draw()}
 /* buka unduhan: VIP / AdSense / link iklan / langsung */
 const sect=(t,...n)=>{const c=mk("section","dc");c.append(mk("h3","",t),...n);return c};
@@ -127,10 +129,10 @@ function unlock(a,ub,ks){
  const P=x=>mk("p","",x),put=(t,...n)=>ub.replaceChildren(mk("h3","",t),...n);
  const setKey=k=>{ks.replaceChildren();if(!k)return;const kb=mk("button","btn","Salin key");kb.onclick=async()=>{try{await navigator.clipboard.writeText(k);kb.textContent="Tersalin";window.FX&&FX.at(kb,{n:10,s:1.7,up:1.2})}catch(e){kb.textContent="Salin manual dari teks di atas"}};ks.append(sect("Key",mk("p","",k),kb))};
  const dl=url=>{const b=mk("a","btn","Unduh sekarang");if(http(url)){b.href=url;b.target="_blank";b.rel="noopener noreferrer";b.onclick=()=>updateDoc(doc(db,"apps",a.id),{clicks:increment(1)}).catch(()=>{})}return b};
- const done=fx=>{const b=dl(a.url);put("Unduh",P("Siap. Ketuk tombol di bawah untuk mengambil file."),b);setKey(a.key);if(fx){b.classList.add("pulse");window.FX&&requestAnimationFrame(()=>FX.at(b,{n:18,s:2.6,up:1.8}))}};
+ const done=fx=>{const b=dl(a.url);put("Unduh",P("Siap. Ketuk tombol di bawah untuk mengambil file."),b);setKey(a.key);if(fx){window.SFX&&SFX.play("chime");b.classList.add("pulse");window.FX&&requestAnimationFrame(()=>FX.at(b,{n:18,s:2.6,up:1.8}))}};
  if(a.vip){
   if(!isVip){put("Khusus VIP",P("File ini hanya untuk member VIP. Verifikasi key VIP di web VIP untuk membukanya."));const b=mk("a","btn","Jadi VIP");b.href=vipHref;ub.append(b);return}
-  getDoc(doc(db,"vipLinks",a.id)).then(s=>{const v=s.data()||{},b=dl(v.url);put("Unduh VIP",P("Akses VIP aktif. Tanpa iklan dan tanpa hitung mundur."),b);setKey(v.key);window.FX&&requestAnimationFrame(()=>FX.at(b,{n:14,s:2,c:["255,200,60","255,154,31","255,226,138"]}))}).catch(()=>put("Unduh VIP",P("Gagal memuat link VIP. Coba muat ulang halaman.")));return}
+  getDoc(doc(db,"vipLinks",a.id)).then(s=>{const v=s.data()||{},b=dl(v.url);put("Unduh VIP",P("Akses VIP aktif. Tanpa iklan dan tanpa hitung mundur."),b);setKey(v.key);window.SFX&&SFX.play("chime");window.FX&&requestAnimationFrame(()=>FX.at(b,{n:14,s:2,c:["255,200,60","255,154,31","255,226,138"]}))}).catch(()=>put("Unduh VIP",P("Gagal memuat link VIP. Coba muat ulang halaman.")));return}
  const mode=isVip?"none":(a.lock||"none"),sec=Math.min(60,Math.max(3,+a.lockSec||10));
  if(mode==="none")return done();
  const bar=mk("div","cdb"),fill=mk("i"),num=mk("b","cdn","");bar.append(fill);

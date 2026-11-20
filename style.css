@@ -212,3 +212,39 @@ html.tt,html.tt *{transition:background-color .35s,color .35s,border-color .35s!
 #st.glow{animation:glow 1s ease-out}
 input,select,textarea{transition:border-color .2s,box-shadow .2s}
 input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(217,45,32,.16)}
+/* ===== maskot Bobi (halaman AI) ===== */
+.stage{display:flex;gap:12px;align-items:center;position:sticky;top:70px;z-index:5;background:var(--bg);padding:10px 0 8px}
+.stage .aim{position:static;padding:0;margin-top:6px;background:none}
+.mwrap{flex:none;width:92px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}.mwrap:active{transform:scale(.95)}
+.sside{flex:1;min-width:0}
+.sbub{position:relative;background:var(--card);border:2px solid var(--line);border-radius:18px 18px 18px 6px;padding:8px 12px;font-weight:600;font-size:14px;line-height:1.35}
+.sbub::before{content:"";position:absolute;left:-9px;top:16px;border-style:solid;border-width:7px 8px 7px 0;border-color:transparent var(--line) transparent transparent}
+.mas{width:100%;height:auto;display:block;overflow:visible}
+.mas .bodyg{animation:bfloat 3.2s ease-in-out infinite}
+@keyframes bfloat{50%{transform:translateY(-5px)}}
+.mas .shadow{transform-box:fill-box;transform-origin:center;animation:bshadow 3.2s ease-in-out infinite}
+@keyframes bshadow{50%{transform:scale(.88);opacity:.1}}
+.mas .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
+.mas .eye+.eye{animation-delay:.03s}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+.mas .pupil{transition:transform .12s;transform:translate(var(--px,0px),var(--py,0px))}
+.mas .bulb{transform-box:fill-box;transform-origin:center;animation:bulb 2s ease-in-out infinite alternate}
+@keyframes bulb{to{transform:scale(1.18)}}
+.mas .bglow{animation:bglow 2s ease-in-out infinite alternate}
+@keyframes bglow{from{opacity:.25}to{opacity:1}}
+.mas .eyes,.mas .eyes-happy,.mas .mouth,.mas .mouth-o,.mas .mouth-sad,.mas .drop,.mas .dots{transition:opacity .15s}
+.mas .eyes-happy,.mas .mouth-o,.mas .mouth-sad,.mas .drop,.mas .dots{opacity:0}
+.mas .mouth-o{transform-box:fill-box;transform-origin:center}
+.mas.happy .eyes{opacity:0}.mas.happy .eyes-happy{opacity:1}
+.mas.talk .mouth{opacity:0}.mas.talk .mouth-o{opacity:1;animation:talk .26s ease-in-out infinite alternate}
+@keyframes talk{from{transform:scale(1,.5)}to{transform:scale(1.15,2.6)}}
+.mas.think .pupil{transform:translate(-5px,-6px)}.mas.think .bulb{animation-duration:.4s}
+.mas.think .dots{opacity:1}.mas .dots circle{animation:dt 1s infinite}.mas .dots circle:nth-child(2){animation-delay:.2s}.mas .dots circle:nth-child(3){animation-delay:.4s}
+@keyframes dt{50%{opacity:.25}}
+.mas.oops .mouth{opacity:0}.mas.oops .mouth-sad{opacity:1}.mas.oops .drop{opacity:1;animation:drop 1.2s infinite}
+@keyframes drop{from{transform:translateY(-4px);opacity:0}30%{opacity:1}to{transform:translateY(12px);opacity:0}}
+.mas .armr{transform-origin:130px 178px}.mas .arml{transform-origin:70px 178px}
+.mas.hello .armr,.mas.happy .armr{animation:wave .5s ease-in-out 4}
+.mas.happy .arml{animation:wave2 .5s ease-in-out 4}
+@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-55deg)}}
+@keyframes wave2{0%,100%{transform:rotate(0)}50%{transform:rotate(55deg)}}

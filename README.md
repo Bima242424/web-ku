@@ -60,3 +60,7 @@ Model tanpa key tampil "belum" dan tidak bisa dipilih. Admin bisa menambah penje
 
 ## Update: partikel & animasi aksi
 `fx.js` menambah partikel latar halus (glow merah/oranye yang melayang pelan), efek ripple saat tombol disentuh, dan letupan kecil saat aksi (favorit, rating, salin key, unduhan terbuka, VIP berhasil). Otomatis mati jika perangkat memilih "kurangi gerak" atau mode hemat data.
+
+## Update: suara & maskot Bobi
+- `sfx.js`: efek suara kecil buatan browser (tanpa file audio), volume rendah, bisa dimatikan lewat menu (☰ > Suara) atau tombol Suara di halaman AI.
+- Halaman `/ai`: maskot robot "Bobi" yang berekspresi (berpikir, bicara, senang, bingung) sesuai aktivitas chat. Jawaban AI muncul seperti diketik sambil mulut Bobi bergerak.

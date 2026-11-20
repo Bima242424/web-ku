@@ -1,45 +1,99 @@
 <!DOCTYPE html>
 <html lang="id"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tanya AI — b-tools</title><meta name="theme-color" content="#d92d20">
+<title>Tanya Bobi — b-tools</title><meta name="theme-color" content="#d92d20">
 <link rel="manifest" href="manifest.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="fx.js" defer></script>
+<script src="sfx.js" defer></script>
 </head><body>
-<header class="hd"><div class="lg"><div class="mk">b</div><b>Tanya AI</b></div><a class="btn alt sm" href="/">← Beranda</a></header>
+<header class="hd"><div class="lg"><div class="mk">b</div><b>Tanya AI</b></div><div class="ac"><button class="btn alt sm" id="snd" data-ns>Suara: nyala</button><a class="btn alt sm" href="/">← Beranda</a></div></header>
 <div class="ai hide" id="ai">
-  <div class="aim" id="models"></div>
+  <div class="stage">
+    <div class="mwrap" id="mw" title="Sentuh Bobi!">
+<svg class="mas" id="mas" viewBox="0 0 200 220" role="img" aria-label="Bobi, maskot AI b-tools">
+<defs>
+ <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8a5a"/><stop offset="1" stop-color="#d92d20"/></linearGradient>
+ <radialGradient id="mgl"><stop offset="0" stop-color="#ffe28a"/><stop offset="1" stop-color="#ffe28a" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse class="shadow" cx="100" cy="210" rx="50" ry="7" fill="#000" opacity=".18"/>
+<g class="bodyg">
+ <line x1="100" y1="38" x2="100" y2="17" stroke="#6b1810" stroke-width="5" stroke-linecap="round"/>
+ <circle class="bglow" cx="100" cy="12" r="18" fill="url(#mgl)"/>
+ <circle class="bulb" cx="100" cy="12" r="7" fill="#ffd75a" stroke="#6b1810" stroke-width="3"/>
+ <rect x="12" y="92" width="18" height="40" rx="9" fill="#b3221a" stroke="#6b1810" stroke-width="3"/>
+ <rect x="170" y="92" width="18" height="40" rx="9" fill="#b3221a" stroke="#6b1810" stroke-width="3"/>
+ <rect x="64" y="158" width="72" height="40" rx="20" fill="#b3221a" stroke="#6b1810" stroke-width="4"/>
+ <circle cx="100" cy="182" r="7" fill="#ffd75a" stroke="#6b1810" stroke-width="2"/>
+ <g class="arm arml"><path d="M70 178 L46 192" stroke="#6b1810" stroke-width="14" stroke-linecap="round"/><path d="M70 178 L46 192" stroke="#ff7a45" stroke-width="8" stroke-linecap="round"/><circle cx="44" cy="193" r="9" fill="#ffd75a" stroke="#6b1810" stroke-width="3"/></g>
+ <g class="arm armr"><path d="M130 178 L154 192" stroke="#6b1810" stroke-width="14" stroke-linecap="round"/><path d="M130 178 L154 192" stroke="#ff7a45" stroke-width="8" stroke-linecap="round"/><circle cx="156" cy="193" r="9" fill="#ffd75a" stroke="#6b1810" stroke-width="3"/></g>
+ <rect x="24" y="36" width="152" height="130" rx="46" fill="url(#mg)" stroke="#6b1810" stroke-width="4"/>
+ <path d="M46 58c14-11 32-14 46-12" stroke="#fff" stroke-opacity=".55" stroke-width="6" fill="none" stroke-linecap="round"/>
+ <rect x="42" y="62" width="116" height="78" rx="32" fill="#2a0f0f"/>
+ <g class="eyes">
+  <g class="eye"><ellipse cx="78" cy="94" rx="13" ry="15" fill="#fff"/><circle class="pupil" cx="80" cy="97" r="7" fill="#2a0f0f"/><circle cx="83" cy="91" r="3" fill="#fff"/></g>
+  <g class="eye"><ellipse cx="122" cy="94" rx="13" ry="15" fill="#fff"/><circle class="pupil" cx="124" cy="97" r="7" fill="#2a0f0f"/><circle cx="127" cy="91" r="3" fill="#fff"/></g>
+ </g>
+ <g class="eyes-happy"><path d="M65 98q13-19 26 0" stroke="#ffe28a" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M109 98q13-19 26 0" stroke="#ffe28a" stroke-width="6" fill="none" stroke-linecap="round"/></g>
+ <ellipse cx="58" cy="120" rx="8" ry="5" fill="#ff8a7a" opacity=".6"/><ellipse cx="142" cy="120" rx="8" ry="5" fill="#ff8a7a" opacity=".6"/>
+ <path class="mouth" d="M88 120q12 12 24 0" stroke="#ffe28a" stroke-width="5" fill="none" stroke-linecap="round"/>
+ <path class="mouth-sad" d="M88 128q12-11 24 0" stroke="#ffe28a" stroke-width="5" fill="none" stroke-linecap="round"/>
+ <ellipse class="mouth-o" cx="100" cy="124" rx="8" ry="4" fill="#ffe28a"/>
+ <path class="drop" d="M152 66q7 10 0 15q-7-5 0-15z" fill="#7fd0ff"/>
+ <g class="dots"><circle cx="150" cy="28" r="4" fill="#ff9a1f"/><circle cx="164" cy="20" r="5" fill="#ff9a1f"/><circle cx="180" cy="12" r="6" fill="#ff9a1f"/></g>
+</g>
+</svg>
+    </div>
+    <div class="sside"><div class="sbub" id="sb">Halo! Aku Bobi.</div><div class="aim" id="models"></div></div>
+  </div>
   <div class="aimsg" id="log"></div>
   <div class="aisug" id="sug"></div>
-  <form class="aibar" id="f"><input id="t" placeholder="Tanya soal web ini…" maxlength="500" autocomplete="off"><button class="btn" id="s">Kirim</button></form>
+  <form class="aibar" id="f"><input id="t" placeholder="Tanya Bobi soal web ini…" maxlength="500" autocomplete="off"><button class="btn" id="s" data-ns>Kirim</button></form>
 </div>
 <script type="module">
 import {auth,onAuthStateChanged} from "./firebase.js";
 const $=s=>document.querySelector(s),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
 try{document.documentElement.dataset.theme=localStorage.getItem("th")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}catch(e){}
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches,play=(n,a)=>window.SFX&&SFX.play(n,a);
 const MODELS=[["gemini","Gemini"],["claude","Claude"],["chatgpt","ChatGPT"]];
-const SUG=["Web ini tentang apa?","Cara mengunduh aplikasi?","Cara pakai key?","Link rusak, harus gimana?","Cara simpan ke layar utama?"];
-let model="gemini",on={},hist=[],busy=false,user=null,started=false;
+const SUG=["Web ini tentang apa?","Cara mengunduh aplikasi?","Cara pakai key?","Link rusak, harus gimana?","Gimana cara jadi VIP?"];
+const TICKLE=["Hehe, geli!","Ada yang bisa Bobi bantu?","Tanya aja, jangan malu!","Bobi siap!"];
+let model="gemini",on={},hist=[],busy=false,user=null,started=false,mt;
+const M=$("#mas"),say=t=>{$("#sb").textContent=t};
+const mood=(m,ms)=>{clearTimeout(mt);M.setAttribute("class","mas"+(m?" "+m:""));if(ms)mt=setTimeout(()=>mood(""),ms)};
+/* suara */
+const sl=()=>{$("#snd").textContent="Suara: "+(window.SFX&&SFX.isOn()?"nyala":"mati")};
+$("#snd").onclick=()=>{if(window.SFX){SFX.toggle();sl();play("pop")}};sl();
+/* mata Bobi mengikuti jari/kursor */
+let ep=0;addEventListener("pointermove",e=>{if(ep||RM)return;ep=requestAnimationFrame(()=>{ep=0;const r=M.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/200);M.style.setProperty("--px",(dx/d*4*k).toFixed(1)+"px");M.style.setProperty("--py",(dy/d*4*k).toFixed(1)+"px")})},{passive:true});
+$("#mw").onclick=()=>{if(busy)return;mood("happy",1100);say(TICKLE[Math.random()*TICKLE.length|0]);play("pop");window.FX&&FX.at(M,{n:8,s:1.6,up:1.2})};
 onAuthStateChanged(auth,u=>{if(!u){location.replace("/");return}user=u;if(!started){started=true;start()}});
 const add=(role,text)=>{const b=mk("div","bub "+role,text);$("#log").append(b);b.scrollIntoView({block:"end",behavior:"smooth"});return b};
+function typeOut(el,text,done){
+ if(RM){el.textContent=text;done();return}
+ let i=0;const n=text.length,per=Math.max(1,Math.ceil(n/(Math.min(4000,n*22)/16.7)));mood("talk");
+ const step=()=>{i=Math.min(n,i+per);el.textContent=text.slice(0,i);el.scrollIntoView({block:"end"});if(i<n)requestAnimationFrame(step);else done()};step()}
 function drawModels(){$("#models").replaceChildren(...MODELS.map(([k,n])=>{const b=mk("button","chip"+(k===model?" on":""));b.type="button";b.disabled=!on[k];
- b.append(n,mk("em","",on[k]?"aktif":"belum"));b.onclick=()=>{model=k;try{localStorage.setItem("aim",k)}catch(e){}drawModels();add("bot","Beralih ke "+n+". Silakan lanjut bertanya.")};return b}))}
+ b.append(n,mk("em","",on[k]?"aktif":"belum"));b.onclick=()=>{model=k;try{localStorage.setItem("aim",k)}catch(e){}drawModels();mood("happy",900);say("Oke, sekarang Bobi pakai "+n+"!");play("pop")};return b}))}
 async function start(){
  try{on=await(await fetch("/api/chat")).json()}catch(e){on={}}
  try{const s=localStorage.getItem("aim");if(on[s])model=s}catch(e){}
  if(!on[model])model=MODELS.map(m=>m[0]).find(k=>on[k])||"gemini";
  drawModels();$("#ai").classList.remove("hide");
- if(!Object.values(on).some(Boolean)){add("bot","Asisten AI belum diaktifkan. Admin perlu mengisi API key di pengaturan Vercel.");$("#t").disabled=$("#s").disabled=true;return}
- add("bot","Halo! Aku asisten b-tools. Tanyakan apa saja soal web ini: isinya, cara unduh, key, favorit, atau fitur lainnya.");
+ if(!Object.values(on).some(Boolean)){mood("oops");say("Aduh, otak Bobi belum dipasang.");add("bot","Asisten AI belum diaktifkan. Admin perlu mengisi API key di pengaturan Vercel.");$("#t").disabled=$("#s").disabled=true;return}
+ mood("hello",2400);say("Halo! Aku Bobi, asisten b-tools.");
+ const g=add("bot","");busy=true;typeOut(g,"Halo! Aku Bobi, maskot b-tools. Tanyakan apa saja soal web ini: isinya, cara unduh, key, favorit, atau cara jadi VIP.",()=>{busy=false;mood("");say("Silakan tanya, Bobi siap!")});
  $("#sug").replaceChildren(...SUG.map(q=>{const b=mk("button","chip",q);b.type="button";b.onclick=()=>send(q);return b}))}
 async function send(q){q=(q||$("#t").value).trim();if(!q||busy||!on[model])return;
  busy=true;$("#t").value="";$("#sug").classList.add("hide");add("me",q);hist.push({role:"user",content:q});
+ play("send");mood("think");say("Hmm, Bobi lagi mikir…");
  const w=add("bot","Mengetik");w.classList.add("typing");
  try{const tok=await user.getIdToken(),r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:JSON.stringify({model,messages:hist.slice(-11)})});
   const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Gagal menghubungi AI.");
-  w.classList.remove("typing");w.textContent=j.reply;hist.push({role:"assistant",content:j.reply})}
- catch(e){w.classList.remove("typing");w.classList.add("err");w.textContent=e.message;hist.pop()}
+  w.classList.remove("typing");hist.push({role:"assistant",content:j.reply});play("recv");say("Nih jawabannya!");
+  typeOut(w,j.reply,()=>{busy=false;mood("happy",1000);say("Ada lagi yang mau ditanya?");w.scrollIntoView({block:"end",behavior:"smooth"})});return}
+ catch(e){w.classList.remove("typing");w.classList.add("err");w.textContent=e.message;hist.pop();mood("oops",2400);say("Aduh, ada masalah…");play("err")}
  busy=false;w.scrollIntoView({block:"end",behavior:"smooth"})}
 $("#f").onsubmit=e=>{e.preventDefault();send()};
 </script></body></html>
