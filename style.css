@@ -248,3 +248,6 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(217,45,32,.16)}
 .mas.happy .arml{animation:wave2 .5s ease-in-out 4}
 @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-55deg)}}
 @keyframes wave2{0%,100%{transform:rotate(0)}50%{transform:rotate(55deg)}}
+/* ===== logo b-tools (gambar) menggantikan huruf "b" ===== */
+.mk{background:#430104 url(logo.webp) center/cover no-repeat;font-size:0;color:transparent;overflow:hidden;flex:none;box-shadow:0 4px 12px -4px rgba(217,45,32,.55)}
+.plate .mk{width:76px;height:76px;border-radius:22px;margin-bottom:6px}

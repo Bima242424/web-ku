@@ -64,3 +64,6 @@ Model tanpa key tampil "belum" dan tidak bisa dipilih. Admin bisa menambah penje
 ## Update: suara & maskot Bobi
 - `sfx.js`: efek suara kecil buatan browser (tanpa file audio), volume rendah, bisa dimatikan lewat menu (☰ > Suara) atau tombol Suara di halaman AI.
 - Halaman `/ai`: maskot robot "Bobi" yang berekspresi (berpikir, bicara, senang, bingung) sesuai aktivitas chat. Jawaban AI muncul seperti diketik sambil mulut Bobi bergerak.
+
+## Logo
+Logo web memakai `logo.webp` (di dalam halaman), `favicon.png`, `apple-touch-icon.png`, serta `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` (ikon saat web dipasang ke layar utama, diatur di `manifest.webmanifest`).
